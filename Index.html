@@ -216,9 +216,9 @@
             <>
               <div className="p-4 space-y-4">
                 {pagePrompts.map(item=>(
-                  <fieldset key={item.id} className="bg-white dark:bg-neutral-850 rounded-2xl shadow p-4 border border-neutral-200 dark:border-neutral-800">
+                  <fieldset key={item.id} className="bg-white dark:bg-neutral-850 rounded-2xl shadow p-4 border border-neutral-200 dark:border-neutral-800 overflow-visible">
                     <legend className="mb-2">
-                      <div className="mt-1 text-base">{item.prompt}</div>
+                      <div className="mt-1 text-base whitespace-normal break-words leading-snug">{item.prompt}</div>
                     </legend>
                     <div className="grid grid-cols-1 gap-2 mt-3 md:flex md:flex-wrap md:gap-2">
                       {LIKERT.map(opt=>{
@@ -227,7 +227,7 @@
                         const selected = answers[item.id]===opt.value;
                         return (
                           <label key={id}
-                                 className={"w-full md:w-auto text-center px-3 py-3 rounded-2xl border text-sm select-none cursor-pointer "
+            className={"w-full md:w-auto text-center px-3 py-3 rounded-2xl border text-sm select-none cursor-pointer whitespace-normal break-words "
                                    + (selected? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100":"bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 hover:border-neutral-500 dark:hover:border-neutral-400 active:scale-[0.99]")}
                                  onClick={()=>setAnswer(item.id,opt.value)}>
                             <input id={id} name={name} type="radio" className="sr-only"
