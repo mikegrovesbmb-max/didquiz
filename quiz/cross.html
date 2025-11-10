@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Cross-Reality Self-Assessment</title>
+  <script>
+    window.tailwind = { config: { darkMode: "class" } };
+  </script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    @media print { .no-print { display: none !important; } .print-break { break-after: page; } }
+  </style>
+</head>
+<body class="bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
+  <div id="root"></div>
+
+  <form name="quiz-submission" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="alterName" />
+    <input type="text" name="answersJson" />
+    <input type="text" name="domainScoresJson" />
+    <input type="text" name="userAgent" />
+    <input type="text" name="timestamp" />
+    <input type="text" name="version" value="v4-dark" />
+    <input type="text" name="bot-field" />
+  </form>
+
+  <script type="text/babel">
+    document.documentElement.classList.add('dark');
+
+    const LIKERT = [
+      { value: 1, short: "1", label: "1 · Never" },
+      { value: 2, short: "2", label: "2 · Rarely" },
+      { value: 3, short: "3", label: "3 · Sometimes" },
+      { value: 4, short: "4", label: "4 · Often" },
+      { value: 5, short: "5", label: "5 · Always" },
+        ];
+
+    const BASE = [
+      { key: "Causality & Time", a: "When I decide to do something, it feels as though I’ve already done it.", b: "Deciding on an action feels like partial completion, even before I start." },
+      { key: "Ownership & Continuity", a: "I’m surprised when people or things remember something I thought was over.", b: "I assume past issues are ‘closed’ until others bring them back up." },
+      { key: "Social Reciprocity", a: "If I feel empathy toward someone, I assume they can feel it too without me saying anything.", b: "I expect others to pick up on my care without explicit signals." },
+      { key: "Physical Consequence", a: "Thinking through an action feels almost as effective as doing it.", b: "A vivid mental rehearsal feels like progress equal to small real steps." },
+      { key: "Ethical Weight", a: "If my intentions are good, the results shouldn’t matter as much.", b: "I judge actions mainly by intent, not by outcomes or impact." },
+      { key: "Memory Architecture", a: "I blend memories or assume others can access layered/parallel memories like I do.", b: "I expect others to understand composite or layered memories." },
+      { key: "Communication Semantics", a: "I expect others to understand my emotional subtext without explicit words.", b: "Hints and subtext should be enough; spelling it out feels redundant." },
+      { key: "Agency & Responsibility", a: "I’m unsure who ‘did’ something when multiple parts were present.", b: "Shared presence blurs who is accountable for actions." },
+      { key: "Mortality & Irreversibility", a: "I underestimate how final death or loss is in the outside world.", b: "I expect reversibility where there is none (people, chances, time)." },
+      { key: "Value & Meaning Creation", a: "If something is unnoticed, it feels like it doesn’t exist or has no worth.", b: "Visibility defines value for me; unseen things feel unreal." },
+      { key: "Consent & Autonomy", a: "Shared headspace makes me feel entitled to others’ thoughts or stories.", b: "Internal proximity feels like permission to access others’ inner material." },
+      { key: "Silence & Observation", a: "If I’m not seen or responded to, it feels like I don’t exist in that moment.", b: "Silence reads as erasure or rejection, not neutral waiting." },
+      { key: "Language of Scale", a: "How big a feeling is should determine how important it is for everyone else.", b: "Emotional intensity should set priority for others too." },
+      { key: "Meta-Awareness", a: "When outside rules differ from inner rules, I feel like my reality is being denied.", b: "Conflicts between my rules and external rules feel invalidating." },
+      { key: "Emotion–Physics Coupling", a: "Strong emotion should cause physical change, and I’m frustrated when it doesn’t.", b: "It feels wrong when huge feelings don’t shift the physical world." },
+      { key: "Symbol Compression", a: "One image/word should convey a whole situation; explanations feel wasteful.", b: "I prefer compressed symbols over step-by-step explanations." },
+      { key: "Authority & Law", a: "Insight or sincerity should outweigh formal rules and procedures.", b: "I expect wise intent to trump bureaucracy and policy." },
+      { key: "Reward & Reinforcement", a: "If there’s no immediate feedback, I lose motivation quickly.", b: "Delayed feedback makes me doubt the effort entirely." },
+      { key: "Privacy & Exposure", a: "I overshare because I expect transparency in return.", b: "I assume mutual openness once I’ve opened up." },
+      { key: "Pain & Signal Interpretation", a: "I treat physical pain or illness as symbolic and ignore practical care.", b: "Symptoms feel like messages more than maintenance issues." },
+      { key: "Resource Economics", a: "I overestimate my energy/money/time as if they regenerate on their own.", b: "I plan as if resources will refill automatically." },
+      { key: "Probability & Randomness", a: "Coincidences feel directed (by fate, malice, or meaning) rather than random.", b: "I assume patterns have intent behind them." },
+      { key: "Stillness & Non-action", a: "Quiet or waiting feels like neglect; I need visible motion to trust things.", b: "Inactivity reads as abandonment instead of processing time." },
+      { key: "Trust Mechanics", a: "If someone’s ‘essence’ feels right, I expect consistent behavior forever.", b: "I trust essence over evidence; changes feel like betrayal." },
+      { key: "Spatial Logic", a: "Thinking of someone should make me feel physically close to them.", b: "Mental closeness should translate to real-world closeness." },
+      { key: "Learning Curve Inversion", a: "After I ‘get it,’ I expect immediate skill without repetition.", b: "Understanding something once should remove the need for practice." },
+      { key: "Moral Geometry", a: "I sort people/things into Good or Evil and struggle with gray areas.", b: "Ambiguity feels like moral failure; clarity wants binaries." },
+      { key: "Perceptual Permanence", a: "If I’m not paying attention to something, it feels like it stops existing.", b: "Unobserved things trend toward unreal in my mind." },
+      { key: "Consensus Reality", a: "If I know something deeply, others should accept it without evidence.", b: "Inner certainty should count as proof to others." },
+      { key: "Evolution/Death of Constructs", a: "I’m surprised by how slow/expensive external change is compared to inner change.", b: "Outer systems feel unjustly sluggish vs. inner shifts." },
+      { key: "Measurement of Growth", a: "Insight should equal recovery; I’m frustrated when behavior doesn’t change immediately.", b: "Realizing a problem should fix it quickly." },
+      { key: "Collective vs. Individual Responsibility", a: "Responsibility should be shared across parts for any action taken.", b: "Any fronting presence should share the credit/blame." },
+      { key: "Material Symbolism", a: "Objects feel magical or metaphorically charged; maintenance seems secondary.", b: "Symbolic value outweighs practical upkeep for me." },
+      { key: "Narrative Cohesion", a: "Life should follow story arcs with satisfying closure.", b: "I expect narrative payoffs in real life." },
+      { key: "Expectation of Justice", a: "I expect moral balance to self-correct in the real world.", b: "Karma-like balance should manifest without intervention." },
+      { key: "Aesthetic Truth", a: "Beauty or harmony feels like proof that something is true or good.", b: "If it looks/feels right, I trust it as true." },
+      { key: "Emotional Contagion", a: "I ‘catch’ group emotions instantly and assume others will sync with me.", b: "I expect my state to pull the group into sync." },
+      { key: "Self-Referential Logic", a: "Because I thought/felt it intensely, it must have occurred or be factual.", b: "Intensity stands in for evidence in the moment." },
+      { key: "Fiction–Reality Boundary", a: "Scenes I imagine or create can feel indistinguishable from lived events.", b: "Vivid imagination blurs with memory of real events." },
+      { key: "Mimetic Influence", a: "Imitating an action should recreate its inner essence or result.", b: "Copying form should reproduce function/meaning." },
+      { key: "Meta-Intent", a: "Becoming aware of a motive should immediately change that motive.", b: "Insight into intent should neutralize it on contact." },
+      { key: "Descriptive vs. Prescriptive", a: "Saying ‘I am calm’ should make me calm in reality.", b: "Declaring a state should instantiate it." },
+      { key: "Temporal Symmetry", a: "I feel responsible for future or ‘already happened’ events (pre-living).", b: "I carry guilt/credit for events outside linear time." },
+      { key: "Boundary Topology", a: "Emotional closeness alone can feel like a physical boundary violation.", b: "Emotional nearness can feel bodily intrusive." },
+      { key: "Feedback Fidelity", a: "Lack of response feels like negative feedback; I overcorrect quickly.", b: "Silence feels like disapproval and triggers fast changes." },
+      { key: "Truth Conditionality", a: "Sincerity should be enough to count something as true.", b: "Honesty feels like proof regardless of facts." },
+      { key: "Self–Other Gradient", a: "I take others’ actions personally, as if they were extensions of me.", b: "Others’ behavior maps onto my identity." },
+      { key: "Signal Redundancy", a: "One signal should be enough; repeating myself feels unnecessary or insulting.", b: "I resist repetition; the first send should stick." },
+      { key: "Symbolic Substitution", a: "Symbolic acts (ritual, art, words) should replace practical action.", b: "Expression should count as execution." },
+      { key: "Transcendence Expectation", a: "I should be able to rise above bodily or external constraints by will alone.", b: "Willpower ought to override limits of body or world." },
+    ];
+
+    const PROMPTS = BASE.flatMap((b, idx) => ([
+      { id: idx*2+1,  key: b.key, prompt: b.a },
+      { id: idx*2+2,  key: b.key, prompt: b.b },
+    ]));
+
+    const DOMAIN_KEYS = {
+      "Temporal/Causal": ["Causality & Time","Mortality & Irreversibility","Probability & Randomness","Stillness & Non-action","Narrative Cohesion","Expectation of Justice","Temporal Symmetry"],
+      "Ownership/Continuity": ["Ownership & Continuity","Perceptual Permanence","Collective vs. Individual Responsibility"],
+      "Social/Relational": ["Social Reciprocity","Consent & Autonomy","Privacy & Exposure","Trust Mechanics","Spatial Logic","Emotional Contagion","Self–Other Gradient","Signal Redundancy"],
+      "Physical/Embodied": ["Physical Consequence","Pain & Signal Interpretation","Resource Economics","Boundary Topology","Transcendence Expectation"],
+      "Ethical/Moral": ["Ethical Weight","Authority & Law","Moral Geometry","Expectation of Justice","Aesthetic Truth","Truth Conditionality"],
+      "Cognitive/Semantic": ["Memory Architecture","Communication Semantics","Value & Meaning Creation","Language of Scale","Symbol Compression","Consensus Reality","Measurement of Growth","Material Symbolism","Aesthetic Truth","Descriptive vs. Prescriptive","Symbolic Substitution"],
+      "Feedback/Learning": ["Reward & Reinforcement","Learning Curve Inversion","Evolution/Death of Constructs","Feedback Fidelity"],
+      "Meta/Philosophical": ["Meta-Awareness","Self-Referential Logic","Fiction–Reality Boundary","Mimetic Influence","Meta-Intent","Temporal Symmetry"],
+      "Boundaries/Consent": ["Consent & Autonomy","Silence & Observation","Privacy & Exposure","Boundary Topology"],
+    };
+
+    const PAGE_SIZE = 10;
+    const STORAGE_KEY = "cross_reality_quiz_v5_dark";
+
+    const mean = (a)=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+    const grade = (v)=> v>=4.25?{l:"Dominant",n:"inner-world logic strongly drives this domain"}:
+                      v>=3.5? {l:"High",n:"frequent influence; translation work recommended"}:
+                      v>=2.5? {l:"Moderate",n:"balanced or situational"}:
+                      v>=1.75?{l:"Low",n:"mainly external-reality anchored"}:
+                               {l:"Minimal",n:"little to no mismatch detected"};
+
+    function usePersistentState(defaultValue) {
+      const [state,setState]=React.useState(()=>{
+        try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):defaultValue; }catch{ return defaultValue; }
+      });
+      React.useEffect(()=>{ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch{} },[state]);
+      return [state,setState];
+    }
+
+    function App(){
+      const [data,setData]=usePersistentState({alterName:"", consent:false, answers:{}, page:-1, show:false});
+      const {alterName,consent,answers,page,show}=data;
+
+      const setAnswer=(id,val)=> setData(s=>({ ...s, answers:{...s.answers,[id]:val} }));
+      const completion = Math.round(Object.keys(answers).length / PROMPTS.length * 100);
+      const pageCount = Math.ceil(PROMPTS.length / PAGE_SIZE);
+      const pagePrompts = React.useMemo(()=>{
+        const start = page * PAGE_SIZE;
+        return PROMPTS.slice(start,start+PAGE_SIZE);
+      },[page]);
+
+      const domainScores = React.useMemo(()=>{
+        const valuesByKey = {};
+        for (const p of PROMPTS) {
+          const v = answers[p.id];
+          if (typeof v === "number") {
+            valuesByKey[p.key] = valuesByKey[p.key] || [];
+            valuesByKey[p.key].push(v);
+          }
+        }
+        const res = {};
+        Object.entries(DOMAIN_KEYS).forEach(([domain, keys])=>{
+          const vals = keys.flatMap(k => valuesByKey[k] || []);
+          res[domain] = mean(vals);
+        });
+        return res;
+      },[answers]);
+
+      const canStart = alterName.trim().length>0 && consent;
+
+      const saveToNetlify = async ()=>{
+        const form = document.forms["quiz-submission"];
+        form.elements["alterName"].value = alterName;
+        form.elements["answersJson"].value = JSON.stringify(answers);
+        form.elements["domainScoresJson"].value = JSON.stringify(domainScores);
+        form.elements["userAgent"].value = navigator.userAgent || "";
+        form.elements["timestamp"].value = new Date().toISOString();
+        try{
+          await fetch("/", { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded" },
+            body: new URLSearchParams(new FormData(form)).toString() });
+          alert("Saved to Netlify Forms ✅");
+        }catch(e){
+          console.error(e);
+          alert("Save failed. Check connectivity or Netlify configuration.");
+        }
+      };
+
+      return (
+        <div className="max-w-xl mx-auto pb-28">
+          {page===-1 && !show && (
+            <div className="p-6 space-y-5">
+              <h1 className="text-2xl font-bold">Cross‑Reality Self‑Assessment</h1>
+              <p className="text-sm text-neutral-700 dark:text-neutral-300">Enter an alter name, then complete the quiz. Results can be saved to your Netlify dashboard via Forms.</p>
+              <label className="block">
+                <span className="text-sm text-neutral-700 dark:text-neutral-300">Alter name</span>
+                <input value={alterName} onChange={e=>setData(s=>({...s,alterName:e.target.value}))}
+                       className="mt-1 w-full px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-200" placeholder="e.g., Abby" />
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={consent} onChange={e=>setData(s=>({...s,consent:e.target.checked}))} />
+                <span className="text-sm text-neutral-700 dark:text-neutral-300">I consent to store my responses in Netlify (for my own project use).</span>
+              </label>
+              <button className="px-5 py-3 rounded-2xl bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 disabled:opacity-40"
+                      disabled={!canStart}
+                      onClick={()=>setData(s=>({...s, page:0}))}>Start quiz</button>
+            </div>
+          )}
+
+          {page>=0 && !show && (
+            <div className="no-print sticky top-0 z-20 bg-neutral-50/95 dark:bg-neutral-900/95 backdrop-blur border-b border-neutral-200 dark:border-neutral-800">
+              <div className="px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold truncate">Alter: {alterName || "—"}</h2>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-300">{completion}%</span>
+                </div>
+                <div className="h-2 bg-neutral-200 dark:bg-neutral-800 rounded-full mt-2">
+                  <div className="h-2 bg-neutral-900 dark:bg-neutral-100 rounded-full" style={{width:`${completion}%`}}></div>
+                </div>
+                <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">Page {page+1} of {pageCount}</div>
+              </div>
+            </div>
+          )}
+
+          {page>=0 && !show && (
+            <>
+              <div className="p-4 space-y-4">
+                {pagePrompts.map(item=>(
+                  <fieldset key={item.id} className="bg-whit dark:bg-neutral-850 rounded-2xl shadow p-4 border border-neutral-200 dark:border-neutral-800 overflow-visible">
+                    <legend className="mb-2">
+                      <div className="mt-1 text-base whitespace-normal break-words leading-snug">{item.prompt}</div>
+                    </legend>
+                    <div className="grid grid-cols-1 gap-2 mt-3 md:flex md:flex-wrap md:gap-2">
+                      {LIKERT.map(opt=>{
+                        const name=`q-${item.id}`;
+                        const id=`${name}-${opt.value}`;
+                        const selected = answers[item.id]===opt.value;
+                        return (
+                          <label key={id}
+            className={"w-full md:w-auto text-center px-3 py-3 rounded-2xl border text-sm select-none cursor-pointer whitespace-normal break-words "
+                                   + (selected? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100":"bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 hover:border-neutral-500 dark:hover:border-neutral-400 active:scale-[0.99]")}
+                                 onClick={()=>setAnswer(item.id,opt.value)}>
+                            <input id={id} name={name} type="radio" className="sr-only"
+                                   value={opt.value} checked={selected||false}
+                                   onChange={()=>setAnswer(item.id,opt.value)}
+                                   aria-label={`${opt.label}`} />
+                            <div className="font-medium">{opt.label}</div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                ))}
+              </div>
+
+              <div className="no-print fixed bottom-0 left-0 right-0 z-30">
+                <div className="safe-bottom bg-white/95 dark:bg-neutral-900/95 backdrop-blur border-t border-neutral-200 dark:border-neutral-800">
+                  <div className="max-w-xl mx-auto px-4 py-3 flex gap-2">
+                    <button className="flex-1 px-4 py-3 rounded-2xl border border-neutral-300 dark:border-neutral-700 disabled:opacity-40"
+                            onClick={()=>setData(s=>({...s,page:s.page-1}))} disabled={page===0}>Back</button>
+                    {page < pageCount-1 ? (
+                      <button className="flex-1 px-4 py-3 rounded-2xl bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                              onClick={()=>setData(s=>({...s,page:s.page+1}))}>Next</button>
+                    ) : (
+                      <button className="flex-1 px-4 py-3 rounded-2xl bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                              onClick={()=>setData(s=>({...s,show:true}))}>View Results</button>
+                    )}
+                    <button className="px-4 py-3 rounded-2xl border border-neutral-300 dark:border-neutral-700"
+                            onClick={()=>setData({alterName:"",consent:false,answers:{},page:-1,show:false})}>Reset</button>
+                  </div> 
+                </div>
+              </div>
+            </>
+          )}
+
+          {show && (
+            <div className="p-4 space-y-6">
+              <section className="bg-white dark:bg-neutral-850 rounded-2xl shadow p-5 border border-neutral-200 dark:border-neutral-800">
+                <h2 className="text-xl font-semibold">Domain Summary</h2>
+                <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1">Higher averages indicate stronger inner-world dominance.</p>
+                <div className="mt-3 space-y-3">
+                  {Object.entries(domainScores).map(([domain,score])=>(
+                    <div key={domain}>
+                      <div className="flex items-baseline justify-between">
+                        <div className="font-medium">{domain}</div>
+                        <div className="text-sm text-neutral-600 dark:text-neutral-300">{score?score.toFixed(2):"—"} / 5</div>
+                      </div>
+                      <div className="h-2 bg-neutral-200 dark:bg-neutral-800 rounded-full mt-2">
+                        <div className="h-2 bg-neutral-900 dark:bg-neutral-100 rounded-full" style={{width:`${(score/5)*100||0}%`}}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="bg-white dark:bg-neutral-850 rounded-2xl shadow p-5 border border-neutral-200 dark:border-neutral-800">
+                <h2 className="text-xl font-semibold">Save Result</h2>
+                <p className="text-sm text-neutral-600 dark:text-neutral-300">Press save to store this submission to your Netlify project via Forms.</p>
+                <div className="flex gap-2 mt-3">
+                  <button className="px-4 py-3 rounded-2xl bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                          onClick={saveToNetlify}>Save to Netlify</button>
+                  <button className="px-4 py-3 rounded-2xl border border-neutral-300 dark:border-neutral-700"
+                          onClick={()=>window.print()}>Print / Save PDF</button>
+                  <button className="px-4 py-3 rounded-2xl border border-neutral-300 dark:border-neutral-700"
+                          onClick={()=>setData(s=>({...s,show:false,page:0}))}>Edit Answers</button>
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
