@@ -3,21 +3,171 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <title>Quiz list</title>
+  <title>Quiz Dashboard</title>
   <script>
     window.tailwind = { config: { darkMode: "class" } };
   </script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>     
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
     @media print { .no-print { display: none !important; } .print-break { break-after: page; } }
+    .gradient-bg {
+      background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(147, 51, 234) 100%);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
   </style>
 </head>
 <body class="bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
+  <!-- Hero Section -->
+  <div class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-16">
+      <div class="text-center mb-16">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+          Quiz Dashboard
+        </h1>
+        <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
+          Explore your inner world through thoughtfully designed assessments and discover insights about yourself
+        </p>
+      </div>
+
+      <!-- Quiz Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Cross Reality Quiz -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl card-hover overflow-hidden">
+          <div class="p-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-neutral-900 dark:text-white">
+              Cross Reality Assessment
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-300 mb-6 leading-relaxed">
+              A comprehensive assessment exploring how inner-world logic interacts with external reality across multiple domains of experience.
+            </p>
+            <div class="flex flex-col space-y-3">
+              <a
+                href="/quiz/cross.html"
+                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-center shadow-lg"
+              >
+                Take Assessment
+              </a>
+              <div class="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
+                <span>~15-20 minutes</span>
+                <span>85 questions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Second Quiz Card -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl card-hover overflow-hidden">
+          <div class="p-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-neutral-900 dark:text-white">
+              Quick Assessment
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-300 mb-6 leading-relaxed">
+              A shorter assessment focusing on key areas of self-understanding and personal insight patterns.
+            </p>
+            <div class="flex flex-col space-y-3">
+              <a
+                href="/quiz/cross.html"
+                class="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-center shadow-lg"
+              >
+                Take Assessment
+              </a>
+              <div class="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
+                <span>~5-8 minutes</span>
+                <span>25 questions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Panel Card -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl card-hover overflow-hidden">
+          <div class="p-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4 text-neutral-900 dark:text-white">
+              Admin Panel
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-300 mb-6 leading-relaxed">
+              View and manage quiz submissions, analyze response patterns, and export data for further analysis.
+            </p>
+            <div class="flex flex-col space-y-3">
+              <a
+                href="admin.html"
+                class="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-center shadow-lg"
+              >
+                Access Admin
+              </a>
+              <div class="flex items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
+                <span>Requires authentication</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="mt-20 text-center">
+        <h2 class="text-3xl font-bold text-white mb-12">Why Take These Assessments?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Self-Discovery</h3>
+            <p class="text-blue-100">Gain deeper insights into your thought patterns and behavioral tendencies</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Personal Growth</h3>
+            <p class="text-blue-100">Identify areas for development and track your progress over time</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Better Relationships</h3>
+            <p class="text-blue-100">Understand how you interact with others and improve communication</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- React App Mount Point -->
   <div id="root"></div>
-  <a href="/quiz/cross.html">test 1
-</a>
- 
+
+  <!-- ... existing code ... -->
+</body>
+</html>
